@@ -22,6 +22,10 @@ const typesForHook = new WeakMap();
  * https://github.com/facebook/react/blob/master/packages/react-refresh/src/ReactFreshRuntime.js#L83
  */
 const computeKey = signature => {
+	if (signature.fullKey != null) {
+		return signature.fullKey;
+	}
+
 	let fullKey = signature.key;
 	let hooks;
 
@@ -74,6 +78,9 @@ function sign(type, key, forceReset, getCustomHooks, status) {
 			return 'needsHooks';
 		} else if (status === 'needsHooks') {
 			signature.fullKey = computeKey(signature);
+			return 'done';
+		} else if (status === 'done') {
+			return 'begin';
 		}
 	}
 }

@@ -16,6 +16,7 @@ window.$RefreshSig$ = () => {
   return (type, key, forceReset, getCustomHooks) => {
     if (!savedType) savedType = type;
     status = self.${NAMESPACE}.sign(type || savedType, key, forceReset, getCustomHooks, status);
+    return type;
   };
 };
 
@@ -57,10 +58,17 @@ if (module.hot && shouldBind) {
       try {
         if (typeof fn === 'function') {
           if (i in m.exports) {
-            compareSignatures(m.exports[i], fn);
+            const prev = m.exports[i];
+            m.exports[i] = fn
+
+            console.log({ ...m });
+            console.log({ ...module });
+
+            compareSignatures(prev, fn);
           }
         }
       } catch (e) {
+        console.log(e);
         self.location.reload();
       }
     }
